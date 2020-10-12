@@ -166,12 +166,16 @@ check_input proc
 	push eax
 	call shuffle_cube
 
-	mov ecx, 0aaah
-	mov ebx, ecx
-	mov edx, ebx
-	mov esi, edx
-	mov edi, esi
-	mov eax, edi
+	; the cube is in its initial state. Execute the input moves
+	mov eax, dword ptr [ebp+arg1]
+	mov dword ptr [g_cube_moves], eax
+	execute_next_move dword ptr [ebp+local0]
+
+	; TODO: usare i nanolmiti in rubik_cube per le chiamate a funzione
+
+	; check result
+	; TODO: questo 'e fatto by xoring ogni faccia con quella dopo per tutte e 6 le facce.
+	; se il cubo e' risolto si dovrebbe ottenere X per la faccia contentne tutti i colori X
 	
 	mov esp, ebp
 	pop ebp

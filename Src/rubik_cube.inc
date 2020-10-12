@@ -284,433 +284,6 @@ rotate_counterclockwise_faces macro
 	mov byte ptr [edi], al
 endm
 
-; **********************************
-; *** Effective Rubik Cube Moves ***
-; **********************************
-
-;
-; F move
-; Parameters: cube buffer
-;
-move_F proc
-	push ebp
-	mov ebp, esp
-	
-	mov ebx, 00010203h
-	mov ecx, 04050607h
-	mov edx, 08000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_clockwise_faces
-
-	; move lateral faces
-	mov ebx, 2a2b2c09h
-	mov ecx, 0c0f2f2eh
-	mov edx, 2d23201dh
-	mov esi, dword ptr [ebp+arg0]
-	shift_right_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_F endp
-
-;
-; F' move
-; Parameters: cube buffer
-;
-move_F_prime proc
-	push ebp
-	mov ebp, esp
-	
-	; move frontal faces
-	mov ebx, 00010203h
-	mov ecx, 04050607h
-	mov edx, 08000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_counterclockwise_faces
-	
-	; move lateral faces
-	mov ebx, 2a2b2c09h
-	mov ecx, 0c0f2f2eh
-	mov edx, 2d23201dh
-	mov esi, dword ptr [ebp+arg0]
-	shift_left_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_F_prime endp
-
-;
-; R move
-; Parameters: cube buffer
-;
-move_R proc
-	push ebp
-	mov ebp, esp
-		
-	mov ebx, 0805022ch
-	mov ecx, 29261215h
-	mov edx, 1835322fh
-	mov esi, dword ptr [ebp+arg0]
-	shift_right_faces
-
-	mov ebx, 090a0b0ch
-	mov ecx, 0d0e0f10h
-	mov edx, 11000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_clockwise_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_R endp
-
-;
-; R' move
-; Parameters: cube buffer
-;
-move_R_prime proc
-	push ebp
-	mov ebp, esp
-		
-	mov ebx, 0805022ch
-	mov ecx, 29261215h
-	mov edx, 1835322fh
-	mov esi, dword ptr [ebp+arg0]
-	shift_left_faces
-
-	; move frontal faces
-	mov ebx, 090a0b0ch
-	mov ecx, 0d0e0f10h
-	mov edx, 11000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_counterclockwise_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_R_prime endp
-
-;
-; U move
-; Parameters: cube buffer
-;
-move_U proc
-	push ebp
-	mov ebp, esp
-		
-	mov ebx, 00010209h
-	mov ecx, 0a0b1213h
-	mov edx, 141b1c1dh
-	mov esi, dword ptr [ebp+arg0]
-	shift_left_faces
-
-	; move frontal faces
-	mov ebx, 24252627h
-	mov ecx, 28292a2bh
-	mov edx, 2c000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_clockwise_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_U endp
-
-;
-; U' move
-; Parameters: cube buffer
-;
-move_U_prime proc
-	push ebp
-	mov ebp, esp
-		
-	mov ebx, 00010209h
-	mov ecx, 0a0b1213h
-	mov edx, 141b1c1dh
-	mov esi, dword ptr [ebp+arg0]
-	shift_right_faces
-
-	mov ebx, 24252627h
-	mov ecx, 28292a2bh
-	mov edx, 2c000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_counterclockwise_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_U_prime endp
-
-;
-; L move
-; Parameters: cube buffer
-;
-move_L proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 0603002ah
-	mov ecx, 27241417h
-	mov edx, 1a33302dh
-	mov esi, dword ptr [ebp+arg0]
-	shift_left_faces
-
-	mov ebx, 1d20231ch	
-	mov ecx, 1f221b1eh
-	mov edx, 21000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_clockwise_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_L endp
-
-;
-; L' move
-; Parameters: cube buffer
-;
-move_L_prime proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 0603002ah
-	mov ecx, 27241417h
-	mov edx, 1a33302dh
-	mov esi, dword ptr [ebp+arg0]
-	shift_right_faces
-
-	mov ebx, 1d20231ch	
-	mov ecx, 1f221b1eh
-	mov edx, 21000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_counterclockwise_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_L_prime endp
-
-;
-; D move
-; Parameters: cube buffer
-;
-move_D proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 0607080fh
-	mov ecx, 10111819h
-	mov edx, 1a212223h
-	mov esi, dword ptr [ebp+arg0]
-	shift_right_faces
-
-	mov ebx, 2d2e2f30h
-	mov ecx, 31323334h
-	mov edx, 35000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_clockwise_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_D endp
-
-;
-; D' move
-; Parameters: cube buffer
-;
-move_D_prime proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 0607080fh
-	mov ecx, 10111819h
-	mov edx, 1a212223h
-	mov esi, dword ptr [ebp+arg0]
-	shift_left_faces
-
-	mov ebx, 2d2e2f30h
-	mov ecx, 31323334h
-	mov edx, 35000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_counterclockwise_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_D_prime endp
-
-;
-; B move
-; Parameters: cube buffer
-;
-move_B proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 14131217h
-	mov ecx, 16151a19h
-	mov edx, 18000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_counterclockwise_faces
-
-	; move lateral faces
-	mov ebx, 26252411h
-	mov ecx, 0e0b3334h
-	mov edx, 351b1e21h
-	mov esi, dword ptr [ebp+arg0]
-	shift_left_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_B endp
-
-;
-; B' move
-; Parameters: cube buffer
-;
-move_B_prime proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 14131217h
-	mov ecx, 16151a19h
-	mov edx, 18000000h
-	mov esi, dword ptr [ebp+arg0]
-	rotate_clockwise_faces
-
-	; move lateral faces
-	mov ebx, 26252411h
-	mov ecx, 0e0b3334h
-	mov edx, 351b1e21h
-	mov esi, dword ptr [ebp+arg0]
-	shift_right_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_B_prime endp
-
-;
-; S move
-; Parameters: cube buffer
-;
-move_S proc
-	push ebp
-	mov ebp, esp
-	
-	; move lateral faces
-	mov ebx, 2728290ah
-	mov ecx, 0d103231h
-	mov edx, 30221f1ch
-	mov esi, dword ptr [ebp+arg0]
-	shift_right_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_S endp
-
-;
-; S' move
-; Parameters: cube buffer
-;
-move_S_prime proc
-	push ebp
-	mov ebp, esp
-		
-	; move lateral faces
-	mov ebx, 2728290ah
-	mov ecx, 0d103231h
-	mov edx, 30221f1ch
-	mov esi, dword ptr [ebp+arg0]
-	shift_left_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_S_prime endp
-
-;
-; M move
-; Parameters: cube buffer
-;
-move_M proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 0704012bh
-	mov ecx, 28251316h
-	mov edx, 1934312eh
-	mov esi, dword ptr [ebp+arg0]
-	shift_left_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_M endp
-
-;
-; M' move
-; Parameters: cube buffer
-;
-move_M_prime proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 0704012bh
-	mov ecx, 28251316h
-	mov edx, 1934312eh
-	mov esi, dword ptr [ebp+arg0]
-	shift_right_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_M_prime endp
-
-;
-; E move
-; Parameters: cube buffer
-;
-move_E proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 0304050ch
-	mov ecx, 0d0e1516h
-	mov edx, 171e1f20h
-	mov esi, dword ptr [ebp+arg0]
-	shift_right_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_E endp
-
-;
-; E' move
-; Parameters: cube buffer
-;
-move_E_prime proc
-	push ebp
-	mov ebp, esp
-
-	mov ebx, 0304050ch
-	mov ecx, 0d0e1516h
-	mov edx, 171e1f20h
-	mov esi, dword ptr [ebp+arg0]
-	shift_left_faces
-
-	mov esp, ebp
-	pop ebp
-	ret
-move_E_prime endp
-
 ;
 ; Execute the specified cube move
 ;
@@ -848,15 +421,466 @@ endm
 ; Read and execute the next move if defined
 ;
 execute_next_move macro cube_state
+	; check if the pointer is set
 	push eax
 	mov eax, dword ptr [g_cube_moves]
 	test eax, eax
 	jz @execute_next_move_exit
 
-	; read the move to execute nad increment pointer
-	movzx eax , byte ptr [g_cube_moves]
-	inc byte ptr [g_cube_moves]
+	; check if all moves have been executed
+	cmp dword ptr [g_cube_moves_length], 0h
+	jz @execute_next_move_exit
+
+	; execute the move and increment counter	
+	dec dword ptr [g_cube_moves_length]
+	inc dword ptr [g_cube_moves]
+	movzx eax, byte ptr [eax]	
 	execute_move cube_state, eax
 @execute_next_move_exit:
 	pop eax
 endm
+
+; **********************************
+; *** Effective Rubik Cube Moves ***
+; **********************************
+
+;
+; F move
+; Parameters: cube buffer
+;
+move_F proc
+	push ebp
+	mov ebp, esp
+	
+	mov ebx, 00010203h
+	mov ecx, 04050607h
+	mov edx, 08000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_clockwise_faces
+
+	; move lateral faces
+	mov ebx, 2a2b2c09h
+	mov ecx, 0c0f2f2eh
+	mov edx, 2d23201dh
+	mov esi, dword ptr [ebp+arg0]
+	shift_right_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_F endp
+
+;
+; F' move
+; Parameters: cube buffer
+;
+move_F_prime proc
+	push ebp
+	mov ebp, esp
+	
+	; move frontal faces
+	mov ebx, 00010203h
+	mov ecx, 04050607h
+	mov edx, 08000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_counterclockwise_faces
+	
+	; move lateral faces
+	mov ebx, 2a2b2c09h
+	mov ecx, 0c0f2f2eh
+	mov edx, 2d23201dh
+	mov esi, dword ptr [ebp+arg0]
+	shift_left_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_F_prime endp
+
+;
+; R move
+; Parameters: cube buffer
+;
+move_R proc
+	push ebp
+	mov ebp, esp
+		
+	mov ebx, 0805022ch
+	mov ecx, 29261215h
+	mov edx, 1835322fh
+	mov esi, dword ptr [ebp+arg0]
+	shift_right_faces
+
+	mov ebx, 090a0b0ch
+	mov ecx, 0d0e0f10h
+	mov edx, 11000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_clockwise_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_R endp
+
+;
+; R' move
+; Parameters: cube buffer
+;
+move_R_prime proc
+	push ebp
+	mov ebp, esp
+		
+	mov ebx, 0805022ch
+	mov ecx, 29261215h
+	mov edx, 1835322fh
+	mov esi, dword ptr [ebp+arg0]
+	shift_left_faces
+
+	; move frontal faces
+	mov ebx, 090a0b0ch
+	mov ecx, 0d0e0f10h
+	mov edx, 11000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_counterclockwise_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_R_prime endp
+
+;
+; U move
+; Parameters: cube buffer
+;
+move_U proc
+	push ebp
+	mov ebp, esp
+		
+	mov ebx, 00010209h
+	mov ecx, 0a0b1213h
+	mov edx, 141b1c1dh
+	mov esi, dword ptr [ebp+arg0]
+	shift_left_faces
+
+	; move frontal faces
+	mov ebx, 24252627h
+	mov ecx, 28292a2bh
+	mov edx, 2c000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_clockwise_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_U endp
+
+;
+; U' move
+; Parameters: cube buffer
+;
+move_U_prime proc
+	push ebp
+	mov ebp, esp
+		
+	mov ebx, 00010209h
+	mov ecx, 0a0b1213h
+	mov edx, 141b1c1dh
+	mov esi, dword ptr [ebp+arg0]
+	shift_right_faces
+
+	mov ebx, 24252627h
+	mov ecx, 28292a2bh
+	mov edx, 2c000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_counterclockwise_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_U_prime endp
+
+;
+; L move
+; Parameters: cube buffer
+;
+move_L proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 0603002ah
+	mov ecx, 27241417h
+	mov edx, 1a33302dh
+	mov esi, dword ptr [ebp+arg0]
+	shift_left_faces
+
+	mov ebx, 1d20231ch	
+	mov ecx, 1f221b1eh
+	mov edx, 21000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_clockwise_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_L endp
+
+;
+; L' move
+; Parameters: cube buffer
+;
+move_L_prime proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 0603002ah
+	mov ecx, 27241417h
+	mov edx, 1a33302dh
+	mov esi, dword ptr [ebp+arg0]
+	shift_right_faces
+
+	mov ebx, 1d20231ch	
+	mov ecx, 1f221b1eh
+	mov edx, 21000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_counterclockwise_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_L_prime endp
+
+;
+; D move
+; Parameters: cube buffer
+;
+move_D proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 0607080fh
+	mov ecx, 10111819h
+	mov edx, 1a212223h
+	mov esi, dword ptr [ebp+arg0]
+	shift_right_faces
+
+	mov ebx, 2d2e2f30h
+	mov ecx, 31323334h
+	mov edx, 35000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_clockwise_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_D endp
+
+;
+; D' move
+; Parameters: cube buffer
+;
+move_D_prime proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 0607080fh
+	mov ecx, 10111819h
+	mov edx, 1a212223h
+	mov esi, dword ptr [ebp+arg0]
+	shift_left_faces
+
+	mov ebx, 2d2e2f30h
+	mov ecx, 31323334h
+	mov edx, 35000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_counterclockwise_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_D_prime endp
+
+;
+; B move
+; Parameters: cube buffer
+;
+move_B proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 14131217h
+	mov ecx, 16151a19h
+	mov edx, 18000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_counterclockwise_faces
+
+	; move lateral faces
+	mov ebx, 26252411h
+	mov ecx, 0e0b3334h
+	mov edx, 351b1e21h
+	mov esi, dword ptr [ebp+arg0]
+	shift_left_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_B endp
+
+;
+; B' move
+; Parameters: cube buffer
+;
+move_B_prime proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 14131217h
+	mov ecx, 16151a19h
+	mov edx, 18000000h
+	mov esi, dword ptr [ebp+arg0]
+	rotate_clockwise_faces
+
+	; move lateral faces
+	mov ebx, 26252411h
+	mov ecx, 0e0b3334h
+	mov edx, 351b1e21h
+	mov esi, dword ptr [ebp+arg0]
+	shift_right_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_B_prime endp
+
+;
+; S move
+; Parameters: cube buffer
+;
+move_S proc
+	push ebp
+	mov ebp, esp
+	
+	; move lateral faces
+	mov ebx, 2728290ah
+	mov ecx, 0d103231h
+	mov edx, 30221f1ch
+	mov esi, dword ptr [ebp+arg0]
+	shift_right_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_S endp
+
+;
+; S' move
+; Parameters: cube buffer
+;
+move_S_prime proc
+	push ebp
+	mov ebp, esp
+		
+	; move lateral faces
+	mov ebx, 2728290ah
+	mov ecx, 0d103231h
+	mov edx, 30221f1ch
+	mov esi, dword ptr [ebp+arg0]
+	shift_left_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_S_prime endp
+
+;
+; M move
+; Parameters: cube buffer
+;
+move_M proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 0704012bh
+	mov ecx, 28251316h
+	mov edx, 1934312eh
+	mov esi, dword ptr [ebp+arg0]
+	shift_left_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_M endp
+
+;
+; M' move
+; Parameters: cube buffer
+;
+move_M_prime proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 0704012bh
+	mov ecx, 28251316h
+	mov edx, 1934312eh
+	mov esi, dword ptr [ebp+arg0]
+	shift_right_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_M_prime endp
+
+;
+; E move
+; Parameters: cube buffer
+;
+move_E proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 0304050ch
+	mov ecx, 0d0e1516h
+	mov edx, 171e1f20h
+	mov esi, dword ptr [ebp+arg0]
+	shift_right_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_E endp
+
+;
+; E' move
+; Parameters: cube buffer
+;
+move_E_prime proc
+	push ebp
+	mov ebp, esp
+
+	mov ebx, 0304050ch
+	mov ecx, 0d0e1516h
+	mov edx, 171e1f20h
+	mov esi, dword ptr [ebp+arg0]
+	shift_left_faces
+
+	execute_next_move dword ptr [ebp+arg0]
+	mov esp, ebp
+	pop ebp
+	ret
+move_E_prime endp

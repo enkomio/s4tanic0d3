@@ -191,6 +191,7 @@ normalize_license endp
 ;
 ; Verifies that the character are in 0-f space
 ; Parameter: license, license size
+; Return: 1 if the license is valid, 0 otherwise
 ; 
 check_license_format proc
 	push ebp
@@ -208,11 +209,11 @@ check_license_format proc
 	cmp al, 12h
 	ja @error
 	loop @b
-	xor eax, eax
+	mov eax, 1
 	jmp @exit
 
 @error:
-	mov eax, 1
+	xor eax, eax
 	jmp @exit
 
 @exit:
@@ -247,6 +248,9 @@ read_lincese proc
 	push dword ptr [ebp+local0]
 	push dword ptr [ebp+arg0]
 	call check_license_format
+	test eax, eax	
+	jz @exit
+	mov eax, dword ptr [ebp+local0]
 
 @exit:
 	mov esp, ebp

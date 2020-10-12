@@ -41,6 +41,7 @@ g_ascii_lower word 057h
 
 g_cube_color db "ywobrg"
 g_cube_moves dword 0h
+g_cube_moves_length dword 0h
 
 
 ;;;;;;;;;;;;;;;;;;;;;;; TEST ;;;;;;;;;;;;;;;;;;;;;;;
@@ -81,8 +82,6 @@ restore_bytes proc
 	pop ebp
 	ret
 restore_bytes endp
-
-
 
 ;
 ; handle the trap exception
@@ -183,12 +182,13 @@ main proc
 	call print_line
 
 	; read license key	
-	;push max_input_length
-	;sub dword ptr [esp], 1
-	;push dword ptr [ebp+local1]
-	;call read_lincese
-	;test eax, eax
-	;jnz @license_not_valid
+	push max_input_length
+	sub dword ptr [esp], 1
+	push dword ptr [ebp+local1]
+	call read_lincese
+	test eax, eax
+	jz @license_not_valid
+	mov dword ptr [g_cube_moves_length], eax
 		
 	; unprotect all program memory
 	call unprotect_code
@@ -211,9 +211,7 @@ main proc
 
 	;;;;;;;;;;;;;;;;;;;;;;; TEST ;;;;;;;;;;;;;;;;;;;;;;;
 	mov eax, offset [g_username]
-	mov dword ptr [ebp+local0], eax
-	mov eax, offset [g_license]
-	mov dword ptr [ebp+local1], eax
+	mov dword ptr [ebp+local0], eax	
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	; check the username/license values
