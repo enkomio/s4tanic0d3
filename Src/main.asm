@@ -55,10 +55,12 @@ include <model.inc>
 include <utility.inc>
 include <obfuscation.inc>
 include <console.inc>
+include <media.inc>
 
 ; start protected code. The code running under this mode, cannot read "code" or "data"
 ; from addresses that are in the encrypted space.
 start_protected_code_marker
+include <rubik_cube.inc>
 include <validator.inc>
 end_protected_code_marker
 
@@ -218,7 +220,16 @@ main proc
 	push dword ptr [ebp+local1]
 	push dword ptr [ebp+local0]
 	call check_input
+
+	; disable tracing
 	mov dword ptr [g_is_trace_enabled], 0h
+
+	; use the result to decrypt the data
+	; use the result to decrypt the data
+	push dword ptr [g_sound_size]
+	push offset [g_sound]
+	push eax
+	call rc4_decrypt
 	
 @license_not_valid:
 	push offset [g_wrong_result]

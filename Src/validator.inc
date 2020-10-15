@@ -1,5 +1,3 @@
-include <rubik_cube.inc>
-
 ;
 ; Compute the initialization key to set the start state of rubik cube
 ; Parameter: expanded username
@@ -124,6 +122,41 @@ shuffle_cube proc
 shuffle_cube endp
 
 ;
+; Verify if the cube is in a completation state
+; Parameter: the cube state
+; Return: a DWORD representing the state of the cube
+;
+verify_cube_result proc
+	push ebp
+	mov ebp, esp	
+		
+	xor ebx, ebx
+	mov esi, dword ptr [ebp+arg0]
+	mov ecx, 36h
+
+@@:
+	mov eax, ecx
+	xor edx, edx
+	mov edi, 9h
+	div edi
+	test edx, edx
+	jnz @do_computation
+	rol ebx, 8
+
+@do_computation:	
+	mov al, byte ptr [esi]
+	inc esi
+	xor bl, al
+	loop @b
+
+	mov eax, ebx
+	xor eax, 03d15dbdbh
+	mov esp, ebp
+	pop ebp
+	ret
+verify_cube_result endp
+
+;
 ; Check the received username and license key
 ; Parameters: Username and license key
 ;
@@ -171,12 +204,10 @@ check_input proc
 	mov dword ptr [g_cube_moves], eax
 	execute_next_move dword ptr [ebp+local0]
 
-	; TODO: usare i nanolmiti in rubik_cube per le chiamate a funzione
+	; check result and compute the decryption key
+	push dword ptr [ebp+local0]
+	call verify_cube_result
 
-	; check result
-	; TODO: questo 'e fatto by xoring ogni faccia con quella dopo per tutte e 6 le facce.
-	; se il cubo e' risolto si dovrebbe ottenere X per la faccia contentne tutti i colori X
-	
 	mov esp, ebp
 	pop ebp
 	ret

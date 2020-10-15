@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="console.inc" />
+    <None Include="media.inc" />
     <None Include="model.inc" />
     <None Include="obfuscation.inc" />
     <None Include="rubik_cube.inc" />

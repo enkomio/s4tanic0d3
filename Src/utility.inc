@@ -114,3 +114,123 @@ mem_copy macro src, dest, size
 	mov ecx, size
 	rep movsb
 endm
+
+;
+; RC4 decrypt the input buffer using the input key
+; Input: key, buffer, buffer size
+;
+rc4_decrypt proc
+	push ebp
+	mov ebp, esp
+	sub esp, 2 * sizeof dword
+
+	; make space for S state
+	sub esp, 0100h
+	mov dword ptr [ebp+local0], esp
+	mov esi, esp	
+
+	; set initial S state
+	mov ecx, 0100h
+	xor eax, eax
+@@:		
+	mov byte ptr [esi], al
+	inc al
+	inc esi
+	loop @b
+
+	; KSA
+	mov ecx, 0100h
+	mov esi, dword ptr [ebp+local0]
+	mov dword ptr [ebp+local1], 0h
+	mov edx, dword ptr [ebp+arg0]	
+@@:
+	; add S[i]
+	lea edi, dword ptr [ecx-0100h]
+	neg edi
+	lea edi, dword ptr [esi+edi]
+	movzx eax, byte ptr [edi]
+	mov ebx, eax
+
+	; add key[i % key.Length] and rotate
+	add bl, dl
+	ror edx, 8
+
+	; updated j
+	add dword ptr [ebp+local1], ebx
+	and dword ptr [ebp+local1], 0ffh
+
+	; do swap S[i], S[j]
+	; save S[i]
+	movzx ebx, byte ptr [edi]	
+	push ebx
+
+	; S[i] = S[j]
+	mov ebx, dword ptr [ebp+local1]
+	lea ebx, dword ptr [esi+ebx]
+	mov al, byte ptr [ebx]
+	mov byte ptr [edi], al
+	
+	; S[j] = saved S[i]
+	pop eax
+	mov byte ptr [ebx], al
+
+	loop @b
+
+	; PRGA
+	mov ecx, dword ptr [ebp+arg2]
+	mov dword ptr [ebp+local0], 0h
+	mov dword ptr [ebp+local1], 0h
+
+@@:
+	; i = (i + 1) % N
+    ; j = (j + S[i]) % N
+	inc dword ptr [ebp+local0]
+	and dword ptr [ebp+local0], 0ffh
+	mov eax, dword ptr [ebp+local0]
+	lea eax, dword ptr [esi + eax]
+	movzx eax, byte ptr [eax]
+	add dword ptr [ebp+local1], eax
+	and dword ptr [ebp+local1], 0ffh
+	
+	; do swap S[i], S[j]
+	; save S[i]
+	mov edi, dword ptr [ebp+local0]
+	lea edi, dword ptr [esi+edi]
+	movzx eax, byte ptr [edi] 
+	push eax
+
+	; S[i] = S[j]
+	mov ebx, dword ptr [ebp+local1]
+	lea ebx, dword ptr [esi+ebx]
+	mov al, byte ptr [ebx]
+	mov byte ptr [edi], al
+	
+	; S[j] = saved S[i]
+	pop eax
+	mov byte ptr [ebx], al
+
+	; int rnd = S[(S[i] + S[j]) % N]
+	mov eax, dword ptr [ebp+local0]
+	lea eax, dword ptr [esi+eax]
+	movzx eax, byte ptr [eax]
+
+	mov ebx, dword ptr [ebp+local1]
+	lea ebx, dword ptr [esi+ebx]
+	mov bl, byte ptr [ebx] 
+
+	add al, bl	
+	and eax, 0ffh
+	lea ebx, dword ptr [esi+eax]
+	mov bl, byte ptr [ebx]
+
+	; ciphertext[n] = rnd ^ plaintext[n]
+	mov eax, dword ptr [ebp+arg1]
+	xor byte ptr [eax], bl
+	inc dword ptr [ebp+arg1]
+
+	loop @b
+
+	mov esp, ebp
+	pop ebp
+	ret
+rc4_decrypt endp

@@ -286,6 +286,12 @@ endm
 
 ;
 ; Execute the specified cube move
+; 0 - move_F			6 - move_D			c - move_R
+; 1 - move_F_prime		7 - move_D_prime	d - move_R_prime
+; 2 - move_U			8 - move_M			e - move_S
+; 3 - move_U_prime		9 - move_M_prime	f - move_S_prime
+; 4 - move_L			a - move_E			g - move_B
+; 5 - move_L_prime		b - move_E_prime	h - move_B_prime
 ;
 execute_move macro cube_state, cube_move
 	push cube_state
