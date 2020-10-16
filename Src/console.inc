@@ -25,16 +25,34 @@ init_console endp
 print_line proc
 	push ebp
 	mov ebp, esp
-	sub esp, sizeof dword
 
 	; compute string length
 	strlen (dword ptr [ebp+arg0])
 
+	push ecx
+	push dword ptr [ebp+arg0]
+	call print_buffer
+
+	mov esp, ebp
+	pop ebp
+	ret
+print_line endp
+
+;
+; Write to console the input buffer
+; Parameter: buffer to print, buffer size
+;
+print_buffer proc
+	push ebp
+	mov ebp, esp
+	sub esp, sizeof dword
+	push ebx
+	
 	; write string
 	lea ebx, [ebp+local0]
 	push 0
 	push ebx
-	push ecx
+	push [ebp+arg1]
 	push dword ptr [ebp+arg0]
 	
 	push STD_OUTPUT_HANDLE
@@ -43,10 +61,11 @@ print_line proc
 
 	call WriteConsoleA
 
+	pop ebx
 	mov esp, ebp
 	pop ebp
 	ret
-print_line endp
+print_buffer endp
 
 ;
 ; Read line and return the string result

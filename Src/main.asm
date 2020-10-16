@@ -47,6 +47,7 @@ g_cube_moves_length dword 0h
 ; play wave vars
 g_element_name db 's4tanic0d3.S4T+',0h
 g_already_opened dword 0h
+g_device_id dword 0h
 
 ;;;;;;;;;;;;;;;;;;;;;;; TEST ;;;;;;;;;;;;;;;;;;;;;;;
 g_username db "username_used_for_test",0h
@@ -243,6 +244,12 @@ main proc
 
 	; print the congratz text
 	; TODO
+
+	push 01000h
+	call Sleep
+
+	; stop the sound
+	call stop_sound
 	
 @license_not_valid:
 	push offset [g_wrong_result]

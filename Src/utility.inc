@@ -1,3 +1,4 @@
+; return the string length in ECX
 strlen macro input
 	push edi
 	push eax
@@ -357,6 +358,10 @@ play_sound proc
 	test eax, eax
 	jnz @error
 
+	; save device ID
+	mov eax, dword ptr [esi].wDeviceID
+	mov dword ptr [g_device_id], eax
+
 	; play content
 	lea eax, dword ptr [ebp+local1]
 	push eax
@@ -373,37 +378,26 @@ play_sound proc
 	xor eax, eax
 
 @finish:
-	
-	mov ecx, 0ffffffffh
-@@:
-	xor eax, eax
-	xor eax, eax
-	cpuid
-	xor eax, eax
-	xor eax, eax
-	cpuid
-	xor eax, eax
-	xor eax, eax
-	cpuid
-	xor eax, eax
-	xor eax, eax
-	cpuid
-	xor eax, eax
-	xor eax, eax
-	cpuid
-	xor eax, eax
-	xor eax, eax
-	cpuid
-	xor eax, eax
-	xor eax, eax
-	cpuid
-	xor eax, eax
-	xor eax, eax
-	cpuid
-	loop @b
-	
-
 	mov esp, ebp
 	pop ebp
 	ret
 play_sound endp
+
+;
+; Stop the music
+;
+stop_sound proc
+	push ebp
+	mov ebp, esp
+
+	; mciSendCommand(wDeviceID, MCI_CLOSE, 0, NULL);
+	push 0h
+	push 0h
+	push 804h ; MCI_CLOSE
+	push dword ptr [g_device_id]
+	call mciSendCommandA
+
+	mov esp, ebp
+	pop ebp
+	ret
+stop_sound endp

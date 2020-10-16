@@ -10,6 +10,7 @@ GetConsoleMode proto, hConsoleHandle:dword, lpMode:ptr dword
 GetLastError proto
 mciSendCommandA proto, IDDevice:dword, uMsg:dword, fdwCommand:ptr dword, dwParam:ptr dword
 mmioInstallIOProcA proto fccIOProc:dword, pIOProc:ptr dword, dwFlags:dword
+Sleep proto dwMilliseconds:dword
 
 EXCEPTION_SINGLE_STEP equ 80000004h
 PAGE_EXECUTE_READWRITE equ 00000040h
