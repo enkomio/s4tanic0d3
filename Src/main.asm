@@ -39,15 +39,21 @@ g_ascii_num word 030h
 g_ascii_upper word 037h
 g_ascii_lower word 057h
 
+; rubik cube vars
 g_cube_color db "ywobrg"
 g_cube_moves dword 0h
 g_cube_moves_length dword 0h
 
+; play wave vars
+g_element_name db 's4tanic0d3.S4T+',0h
+g_already_opened dword 0h
 
 ;;;;;;;;;;;;;;;;;;;;;;; TEST ;;;;;;;;;;;;;;;;;;;;;;;
 g_username db "username_used_for_test",0h
 g_license db "license_test_value",0h
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+include <media.inc>
 
 .code
 
@@ -55,7 +61,7 @@ include <model.inc>
 include <utility.inc>
 include <obfuscation.inc>
 include <console.inc>
-include <media.inc>
+includelib <Winmm>
 
 ; start protected code. The code running under this mode, cannot read "code" or "data"
 ; from addresses that are in the encrypted space.
@@ -225,11 +231,18 @@ main proc
 	mov dword ptr [g_is_trace_enabled], 0h
 
 	; use the result to decrypt the data
-	; use the result to decrypt the data
 	push dword ptr [g_sound_size]
 	push offset [g_sound]
 	push eax
 	call rc4_decrypt
+
+	; play the sound
+	call play_sound
+	test eax, eax
+	jz @license_not_valid
+
+	; print the congratz text
+	; TODO
 	
 @license_not_valid:
 	push offset [g_wrong_result]

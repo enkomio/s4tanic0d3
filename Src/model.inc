@@ -8,6 +8,8 @@ ReadConsoleA proto, hConsoleInput:dword, lpBuffer:ptr byte, nNumberOfCharsToRead
 SetConsoleMode proto, hConsoleHandle:dword, dwMode:dword
 GetConsoleMode proto, hConsoleHandle:dword, lpMode:ptr dword
 GetLastError proto
+mciSendCommandA proto, IDDevice:dword, uMsg:dword, fdwCommand:ptr dword, dwParam:ptr dword
+mmioInstallIOProcA proto fccIOProc:dword, pIOProc:ptr dword, dwFlags:dword
 
 EXCEPTION_SINGLE_STEP equ 80000004h
 PAGE_EXECUTE_READWRITE equ 00000040h
@@ -78,4 +80,35 @@ CONTEXT struct
 	ExtendedRegisters	db 512 dup (?)
 CONTEXT ends
 
-	
+MCI_OPEN_PARMS struct
+	dwCallback			dword ptr ?
+	wDeviceID			dword ?
+	lpstrDeviceType		dword ptr?
+	lpstrElementName	dword ptr ?
+	lpstrAlias			dword ptr ?
+MCI_OPEN_PARMS ends
+
+MCI_PLAY_PARMS struct
+	dwCallback	dword ptr ?
+	dwFrom		dword ?
+	dwTo		dword ?
+MCI_PLAY_PARMS ends
+
+MMIOINFO struct
+	dwFlags			dword ?
+	fccIOProc		dword ?
+	pIOProc			dword ptr ?
+	wErrorRet		dword ?
+	htask			dword ptr ?
+	cchBuffer		dword ?
+	pchBuffer		dword ptr ?
+	pchNext			dword ptr ?
+	pchEndRead		dword ptr ?
+	pchEndWrite		dword ptr ?
+	lBufOffset		dword ?
+	lDiskOffset		dword ?
+	adwInfo			dword 3 dup (?)
+	dwReserved1		dword ?
+	dwReserved2		dword ?
+	hmmio			dword ptr ?
+MMIOINFO ends

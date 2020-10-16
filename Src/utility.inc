@@ -234,3 +234,176 @@ rc4_decrypt proc
 	pop ebp
 	ret
 rc4_decrypt endp
+
+;
+; LRESULT CALLBACK IOProc(LPMMIOINFO lpMMIOInfo, UINT uMessage, LPARAM lParam1, LPARAM lParam2)
+;
+IOProc proc
+	push ebp
+	mov ebp, esp
+
+	; save non volatile registers, see: https://docs.microsoft.com/en-us/cpp/build/x64-software-conventions?view=vs-2019#register-usage
+	push esi
+	push edi
+
+	assume edx:ptr MMIOINFO
+	mov edx, dword ptr [ebp+arg0]
+	mov eax, dword ptr [ebp+arg1]	
+
+	; MMIOM_OPEN
+	cmp eax, 3h
+	jnz @mmiom_close
+	mov eax, dword ptr [g_already_opened]
+	test eax, eax
+	jnz @ok
+	mov dword ptr [g_already_opened], 1h
+	mov dword ptr [edx].lDiskOffset, 0h
+	jmp @ok
+
+	; MMIOM_CLOSE
+@mmiom_close:
+	cmp eax, 4h
+	jnz @mmiom_read
+	jmp @ok
+
+	; MMIOM_READ
+@mmiom_read:
+	cmp eax, 0h
+	jnz @mmiom_seek
+	mov edi, dword ptr [ebp+arg2]
+	mov esi, offset [g_sound]
+	add esi, dword ptr [edx].lDiskOffset
+	mov ecx, dword ptr [ebp+arg3]
+	rep movsb
+	mov eax, dword ptr [ebp+arg3]
+	add dword ptr [edx].lDiskOffset, eax
+	jmp @finish
+
+	; MMIOM_SEEK
+@mmiom_seek:
+	cmp eax, 2h
+	jnz @default
+	mov eax, dword ptr [ebp+arg3]
+	; SEEK_SET
+	cmp eax, 0h
+	jne @f
+	mov eax, dword ptr [ebp+arg2]
+	mov dword ptr [edx].lDiskOffset, eax
+@@:
+	mov eax, dword ptr [edx].lDiskOffset
+	jmp @finish
+
+@default:
+	mov eax, -1h
+	jmp @finish
+	
+@ok:
+	xor eax, eax
+
+@finish:	
+	; restore non volatile registers
+	pop edi
+	pop esi
+
+	mov esp, ebp
+	pop ebp
+	ret 10h
+IOProc endp
+
+;
+; Try to play the wave content
+; Returns 1 if the content if played successfully
+;
+play_sound proc
+	push ebp
+	mov ebp, esp
+
+	; allocate space for vars and zero out
+	sub esp, 2 * sizeof dword
+	xor eax, eax
+	
+	sub esp, sizeof MCI_OPEN_PARMS
+	mov dword ptr [ebp+local0], esp
+	mov ecx, sizeof MCI_OPEN_PARMS
+	mov edi, esp
+	rep stosb
+
+	sub esp, sizeof MCI_PLAY_PARMS
+	mov dword ptr [ebp+local1], esp
+	mov ecx, sizeof MCI_PLAY_PARMS
+	mov edi, esp
+	rep stosb
+
+	; Install a custom I/O procedure
+	push 010010000h ; MMIO_INSTALLPROC | MMIO_GLOBALPROC
+	push offset IOProc
+	push 020543453h
+	call mmioInstallIOProcA
+	test eax, eax
+	jz @error
+
+	; open WAV device
+	assume esi:ptr MCI_OPEN_PARMS
+	mov esi, dword ptr [ebp+local0]
+	mov dword ptr [esi].lpstrDeviceType, 020ah ; MCI_DEVTYPE_WAVEFORM_AUDIO
+	mov ebx, offset [g_element_name]
+	mov dword ptr [esi].lpstrElementName, ebx
+	
+	push dword ptr [ebp+local0]	
+	push 03200h ; MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_ELEMENT | MCI_OPEN_TYPE_ID
+	push 803h ; MCI_OPEN
+	push 0
+	call mciSendCommandA
+	test eax, eax
+	jnz @error
+
+	; play content
+	lea eax, dword ptr [ebp+local1]
+	push eax
+	push 1h ; MCI_NOTIFY
+	push 0806h ; MCI_PLAY
+	push dword ptr [esi].wDeviceID
+	call mciSendCommandA
+	test eax, eax
+	jnz @error
+
+	mov eax, 1h
+	jmp @finish
+@error:
+	xor eax, eax
+
+@finish:
+	
+	mov ecx, 0ffffffffh
+@@:
+	xor eax, eax
+	xor eax, eax
+	cpuid
+	xor eax, eax
+	xor eax, eax
+	cpuid
+	xor eax, eax
+	xor eax, eax
+	cpuid
+	xor eax, eax
+	xor eax, eax
+	cpuid
+	xor eax, eax
+	xor eax, eax
+	cpuid
+	xor eax, eax
+	xor eax, eax
+	cpuid
+	xor eax, eax
+	xor eax, eax
+	cpuid
+	xor eax, eax
+	xor eax, eax
+	cpuid
+	loop @b
+	
+
+	mov esp, ebp
+	pop ebp
+	ret
+play_sound endp
