@@ -163,6 +163,7 @@ exception_handler endp
 main proc
 	push ebp
 	mov ebp, esp
+
 	max_input_length equ 60h
 	sub esp, sizeof dword * 2
 
@@ -231,22 +232,36 @@ main proc
 	; disable tracing
 	mov dword ptr [g_is_trace_enabled], 0h
 
+	; save key
+	push eax
+
 	; use the result to decrypt the data
 	push dword ptr [g_sound_size]
 	push offset [g_sound]
 	push eax
 	call rc4_decrypt
-
+	add esp, 0ch
+	
 	; play the sound
 	call play_sound
 	test eax, eax
 	jz @license_not_valid
 
-	; print the congratz text
-	; TODO
+	; decrypt congratz
+	pop eax
+	push dword ptr [g_success_size]
+	push offset [g_success]
+	push eax
+	call rc4_decrypt
 
-	push 01000h
-	call Sleep
+	; print the congratz text
+	push 1fh
+	push dword ptr [g_success_size]
+	push offset [g_success]
+	call print_slow
+
+	push 7d0h
+	call sleep
 
 	; stop the sound
 	call stop_sound

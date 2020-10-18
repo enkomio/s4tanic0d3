@@ -327,3 +327,39 @@ read_username proc
 	pop ebp
 	ret
 read_username endp
+
+;
+; Print a given string in a specified time
+; Parameters: string, string length, time
+;
+print_slow proc
+	push ebp
+	mov ebp, esp 
+
+	; compute how log I have to wait for each char	
+	xor edx, edx
+	mov eax, dword ptr [ebp+arg2]	
+	mov ecx, dword ptr [ebp+arg1]
+	mov ebx, 3e8h
+	mul ebx
+	div ecx	
+	mov edi, eax
+
+	; print the string
+	mov esi, dword ptr [ebp+arg0]
+@@:
+	push ecx
+	push 1
+	push esi
+	call print_buffer
+	add esp, 8h
+	inc esi
+	push edi
+	call sleep
+	pop ecx
+	loop @b
+
+	mov esp, ebp
+	pop ebp
+	ret
+print_slow endp
