@@ -129,8 +129,10 @@ shuffle_cube endp
 verify_cube_result proc
 	push ebp
 	mov ebp, esp	
+	sub esp, sizeof dword
 		
 	xor ebx, ebx
+	mov dword ptr [ebp+local0], 1h
 	mov esi, dword ptr [ebp+arg0]
 	mov ecx, 36h
 
@@ -141,7 +143,11 @@ verify_cube_result proc
 	div edi
 	test edx, edx
 	jnz @do_computation
-	rol ebx, 8
+	test bl, bl
+	jz @do_computation
+	mov eax, dword ptr [ebp+local0]
+	mul bl
+	mov dword ptr [ebp+local0], eax
 
 @do_computation:	
 	mov al, byte ptr [esi]
@@ -149,8 +155,12 @@ verify_cube_result proc
 	xor bl, al
 	loop @b
 
-	mov eax, ebx
-	xor eax, 03d15dbdbh
+	mov eax, dword ptr [ebp+local0]
+	mov ebx, eax
+	rol eax, 10h
+	neg bx
+	mov ax, bx
+	xor eax, 02d66483ah
 	mov esp, ebp
 	pop ebp
 	ret

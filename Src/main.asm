@@ -49,11 +49,6 @@ g_element_name db 's4tanic0d3.S4T+',0h
 g_already_opened dword 0h
 g_device_id dword 0h
 
-;;;;;;;;;;;;;;;;;;;;;;; TEST ;;;;;;;;;;;;;;;;;;;;;;;
-g_username db "username_used_for_test",0h
-g_license db "license_test_value",0h
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 include <media.inc>
 
 .code
@@ -182,10 +177,10 @@ main proc
 	call print_line
 
 	; read username
-	;push max_input_length
-	;sub dword ptr [esp], 1
-	;push dword ptr [ebp+local0]
-	;call read_username
+	push max_input_length
+	sub dword ptr [esp], 1
+	push dword ptr [ebp+local0]
+	call read_username
 	
 	; print license key
 	push offset [g_insert_license]
@@ -218,11 +213,6 @@ main proc
 	;pushfd
 	;or word ptr [esp], 100h
 	;popfd
-
-	;;;;;;;;;;;;;;;;;;;;;;; TEST ;;;;;;;;;;;;;;;;;;;;;;;
-	mov eax, offset [g_username]
-	mov dword ptr [ebp+local0], eax	
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	; check the username/license values
 	push dword ptr [ebp+local1]
@@ -265,13 +255,19 @@ main proc
 
 	; stop the sound
 	call stop_sound
-	
+	xor eax, eax
+	jmp @exit
+
 @license_not_valid:
 	push offset [g_wrong_result]
 	call print_line 
+	mov eax, 1h
 	jmp @exit
 
 @exit:
+	push eax
+	call ExitProcess
+
 	mov esp, ebp
 	pop ebp
 	ret
