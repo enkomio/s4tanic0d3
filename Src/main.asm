@@ -24,6 +24,7 @@ g_is_trace_enabled dword 0h
 ; bytes containing the content that is encrypted and temporary decrypted for execution
 g_saved_encrypted_code_address dword 0h
 g_saved_encrypted_code byte 0Fh dup(0h)
+g_restore_address dword 0h
 
 ; constants used to mark the encrypted code
 g_saved_start_protected_code dword 0h
@@ -33,7 +34,7 @@ g_saved_end_protected_code dword 0h
 g_insert_license db "Please enter your license key: ", 0h
 g_insert_username db "Please enter your ID: ", 0h
 g_wrong_result db "The inserted license is not valid!", 0h
-g_checking db "Verifying license, please wait...", 0dh, 0ah, 0h
+g_wait db "License validation in process...", 0ah, 0dh, 0h
 g_license_separator db "-", 0h
 
 g_ascii_num word 030h
@@ -67,6 +68,33 @@ include <rubik_cube.inc>
 include <validator.inc>
 end_protected_code_marker
 
+@function_table:
+	dword offset compute_initialization_key
+	dword offset gen_cube_random
+	dword offset shuffle_cube
+	dword offset verify_cube_result
+	dword offset move_F
+	dword offset move_F_prime
+	dword offset move_R
+	dword offset move_R_prime
+	dword offset move_U
+	dword offset move_U_prime
+	dword offset move_L
+	dword offset move_L_prime
+	dword offset move_D
+	dword offset move_D_prime
+	dword offset move_B
+	dword offset move_B_prime
+	dword offset move_S
+	dword offset move_S_prime
+	dword offset move_M
+	dword offset move_M_prime
+	dword offset move_E
+	dword offset move_E_prime
+
+@nop:
+	nop
+
 ;
 ; restore bytes previously overwritten by decrypted code
 ;
@@ -95,24 +123,26 @@ restore_bytes endp
 trap_handler proc
 	push ebp
 	mov ebp, esp
-
-	; replace previous instructions
-	call restore_bytes
-
-	; check if signel step is enabled
-	cmp dword ptr [g_is_trace_enabled], 0h
-	jz @exit
-
-	; set trap flag in CONTEXT again
-	mov eax, [ebp+arg0]
-	assume  eax: ptr CONTEXT
-	or dword ptr [eax].EFlags, 100h	
 		
 	; obtains the instruction address causing the fault
-	mov ebx, [ebp+arg0]
 	assume  ebx: ptr CONTEXT
-	mov eax, [ebx].rEip	
+	mov ebx, [ebp+arg0]	
+	mov eax, [ebx].rEip		
 
+	; The code below uses a global variable for a valid reason. When the privileged
+	; exception is raised, and the EIP modified accordingly, the trap flag, once  
+	; set, executes one instruction and then stop (this is an expected behaviour).
+	; Unfortunately, with this behaviour, we miss the just decrypted instruction.
+	; With this solution, we ensure that the executed instruction is just a dummy 
+	; one, and when the trap_handler is called again, the real instruction is set.
+	; If you know a more elegant solution to this, please let me know :)
+	mov ebx, dword ptr [g_restore_address]
+	test ebx, ebx
+	jz @f
+	mov dword ptr [g_restore_address], 0h
+	mov eax, ebx
+
+@@:
 	; verify that the faulty EIP is inside the protected range, if not does not decrypt	
 	cmp eax, dword ptr [g_saved_start_protected_code]
 	jb @exit
@@ -123,40 +153,97 @@ trap_handler proc
 	push eax
 	call decrypt_code
 			
-@exit:
-	xor eax, eax
+@exit:	
 	mov esp, ebp
 	pop ebp
 	ret
 trap_handler endp
+
+;
+; call a specific function that was invoked via obfuscation
+; Parameter: CONTEXT
+;
+call_nano_handler proc
+	push ebp
+	mov ebp, esp
+
+	mov esi, [ebp+arg0]
+	assume  esi: ptr CONTEXT
+
+	; adjust stack
+	mov ebx, [esi].rEsp
+	sub ebx, sizeof dword
+	mov dword ptr [esi].rEsp, ebx
+	
+	; get function	
+	mov eax, [esi].rEip	
+	inc eax	
+	movzx eax, byte ptr [eax]
+	lea eax, dword ptr [@function_table + eax * sizeof dword]
+	mov edx, dword ptr [eax]
+
+	; set return address
+	mov eax, [esi].rEip	
+	add eax, 2
+	mov dword ptr [ebx], eax
+
+	; set new EIP
+	mov dword ptr [g_restore_address], edx
+	mov edx, offset [@nop]
+	mov [esi].rEip, edx
+
+	xor eax, eax
+	mov esp, ebp
+	pop ebp
+	ret
+call_nano_handler endp
 
 ; 
 ; See https://docs.microsoft.com/en-us/windows/win32/devnotes/--c-specific-handler2
 ;
 exception_handler proc
 	push ebp
-	mov ebp, esp
-	mov ebx, [ebp+arg0]		
+	mov ebp, esp	
 
-	; verify if it is a nano call	
+	; verify if it is a nano call		
+	mov ebx, [ebp+arg0]
 	cmp dword ptr [ebx], EXCEPTION_PRIVILEGED_INSTRUCTION
 	jne @f
 	push [ebp+arg2]
 	call call_nano_handler
-	jmp @exit
+
+	; replace previous instructions if necessary
+	call restore_bytes
+	jmp @set_trap_flag
 	
 @@:
 	; verify that the exception is due to single step	
 	cmp dword ptr [ebx], EXCEPTION_SINGLE_STEP
 	jne @not_handled
 
+	; replace previous instructions if necessary
+	call restore_bytes
+
 	; invoke trap handler
 	push [ebp+arg2]
 	call trap_handler
-	jmp @exit	
+	xor eax, eax
+	jmp @set_trap_flag	
 
 @not_handled:
 	mov eax, 1
+	mov dword ptr [g_is_trace_enabled], 0h
+	jmp @exit
+
+@set_trap_flag:
+	; check if single step is enabled
+	cmp dword ptr [g_is_trace_enabled], 0h
+	jz @exit
+
+	; set trap flag in CONTEXT again
+	mov ebx, [ebp+arg2]
+	assume ebx: ptr CONTEXT
+	or dword ptr [ebx].EFlags, 100h	
 
 @exit:
 	mov esp, ebp
@@ -210,6 +297,10 @@ main proc
 	; fill global vars with start and end addresses of protected code
 	call find_protected_code
 
+	; print wait message
+	push offset [g_wait]
+	call print_line
+
 	; set the exception handler
 	push offset exception_handler
 	assume fs:nothing
@@ -218,14 +309,10 @@ main proc
 	assume fs:error
 
 	; enable trap flag and execute obfuscated code that is inside marks
-	;mov dword ptr [g_is_trace_enabled], 1h
-	;pushfd
-	;or word ptr [esp], 100h
-	;popfd
-
-	; print please wair message
-	push offset [g_checking]
-	call print_line
+	mov dword ptr [g_is_trace_enabled], 1h
+	pushfd
+	or word ptr [esp], 100h
+	popfd
 
 	; check the username/license values
 	push dword ptr [ebp+local1]

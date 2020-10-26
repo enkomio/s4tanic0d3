@@ -98,7 +98,7 @@ shuffle_cube proc
 	sub esp, sizeof dword
 	
 	; initialize loop counter
-	mov dword ptr [ebp+local0], 01000h
+	mov dword ptr [ebp+local0], 1000h
 
 @@:
 	; generate the random move to execute
@@ -202,7 +202,6 @@ check_input proc
 	; compute initialization key
 	push dword ptr [ebp+arg0]
 	nano_call n_compute_initialization_key
-	add esp, 4
 
 	; generate random cube state
 	push dword ptr [ebp+local0]

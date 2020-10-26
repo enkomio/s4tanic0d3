@@ -34,69 +34,6 @@ nano_call macro func_index
 endm
 
 ;
-; call a specific function that was invoked via obfuscation
-; Parameter: CONTEXT
-;
-call_nano_handler proc
-	push ebp
-	mov ebp, esp
-	jmp @f
-
-@function_table:
-	dword offset compute_initialization_key
-	dword offset gen_cube_random
-	dword offset shuffle_cube
-	dword offset verify_cube_result
-	dword offset move_F
-	dword offset move_F_prime
-	dword offset move_R
-	dword offset move_R_prime
-	dword offset move_U
-	dword offset move_U_prime
-	dword offset move_L
-	dword offset move_L_prime
-	dword offset move_D
-	dword offset move_D_prime
-	dword offset move_B
-	dword offset move_B_prime
-	dword offset move_S
-	dword offset move_S_prime
-	dword offset move_M
-	dword offset move_M_prime
-	dword offset move_E
-	dword offset move_E_prime
-
-@@:
-	mov esi, [ebp+arg0]
-	assume  esi: ptr CONTEXT
-
-	; adjust stack
-	mov ebx, [esi].rEsp
-	sub ebx, sizeof dword
-	mov dword ptr [esi].rEsp, ebx
-	
-	; get function	
-	mov eax, [esi].rEip	
-	inc eax	
-	movzx eax, byte ptr [eax]
-	lea eax, dword ptr [@function_table + eax * sizeof dword]
-	mov edx, dword ptr [eax]
-
-	; set return address
-	mov eax, [esi].rEip	
-	add eax, 2
-	mov dword ptr [ebx], eax
-
-	; set new EIP
-	mov [esi].rEip, edx
-
-	xor eax, eax
-	mov esp, ebp
-	pop ebp
-	ret
-call_nano_handler endp
-
-;
 ; generate a random number used to deobfuscate
 ; Parameters: address of the instruction to deobfuscate
 ;
