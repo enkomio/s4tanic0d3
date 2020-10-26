@@ -135,9 +135,17 @@ trap_handler endp
 exception_handler proc
 	push ebp
 	mov ebp, esp
-
-	; verify that the exception is due to single step
 	mov ebx, [ebp+arg0]		
+
+	; verify if it is a nano call	
+	cmp dword ptr [ebx], EXCEPTION_PRIVILEGED_INSTRUCTION
+	jne @f
+	push [ebp+arg2]
+	call call_nano_handler
+	jmp @exit
+	
+@@:
+	; verify that the exception is due to single step	
 	cmp dword ptr [ebx], EXCEPTION_SINGLE_STEP
 	jne @not_handled
 

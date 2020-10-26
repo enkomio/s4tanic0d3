@@ -14,6 +14,7 @@ Sleep proto dwMilliseconds:dword
 ExitProcess proto uExitCode:dword
 
 EXCEPTION_SINGLE_STEP equ 80000004h
+EXCEPTION_PRIVILEGED_INSTRUCTION equ 0C0000096h
 PAGE_EXECUTE_READWRITE equ 00000040h
 STD_INPUT_HANDLE equ -10
 STD_OUTPUT_HANDLE equ -11
@@ -43,7 +44,7 @@ start_protected_code_marker equ <dword marker_1, marker_2, marker_3, marker_4>
 end_protected_code_marker equ <dword marker_4, marker_3, marker_2, marker_1>
 
 CONTEXT struct
-	ContextFlags		DWORD  ?	
+	ContextFlags	DWORD  ?	
 	rDr0			DWORD  ?
 	rDr1			DWORD  ?
 	rDr2			DWORD  ?

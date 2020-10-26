@@ -1,6 +1,101 @@
 g_random_multiplier dword 010101h
 g_random_adder dword 415927h
 
+; The following code implements what described in:
+;	- https://www.msreverseengineering.com/blog/2015/6/29/transparent-deobfuscation-with-ida-processor-module-extensions
+; This protection is very similar to nanomities protection. See http://deroko.phearless.org/nanomites.zip
+; file nanomites.asm line 1741
+
+n_compute_initialization_key equ 0h
+n_gen_cube_random equ 1h
+n_shuffle_cube equ 2h
+n_verify_cube_result equ 3h
+n_move_F equ 4h
+n_move_F_prime equ 5h
+n_move_R equ 6h
+n_move_R_prime equ 7h
+n_move_U equ 8h
+n_move_U_prime equ 9h
+n_move_L equ 0Ah
+n_move_L_prime equ 0Bh
+n_move_D equ 0Ch
+n_move_D_prime equ 0Dh
+n_move_B equ 0Eh
+n_move_B_prime equ 0Fh
+n_move_S equ 10h
+n_move_S_prime equ 11h
+n_move_M equ 12h
+n_move_M_prime equ 13h
+n_move_E equ 14h
+n_move_E_prime equ 15h
+
+nano_call macro func_index
+	in al, func_index
+endm
+
+;
+; call a specific function that was invoked via obfuscation
+; Parameter: CONTEXT
+;
+call_nano_handler proc
+	push ebp
+	mov ebp, esp
+	jmp @f
+
+@function_table:
+	dword offset compute_initialization_key
+	dword offset gen_cube_random
+	dword offset shuffle_cube
+	dword offset verify_cube_result
+	dword offset move_F
+	dword offset move_F_prime
+	dword offset move_R
+	dword offset move_R_prime
+	dword offset move_U
+	dword offset move_U_prime
+	dword offset move_L
+	dword offset move_L_prime
+	dword offset move_D
+	dword offset move_D_prime
+	dword offset move_B
+	dword offset move_B_prime
+	dword offset move_S
+	dword offset move_S_prime
+	dword offset move_M
+	dword offset move_M_prime
+	dword offset move_E
+	dword offset move_E_prime
+
+@@:
+	mov esi, [ebp+arg0]
+	assume  esi: ptr CONTEXT
+
+	; adjust stack
+	mov ebx, [esi].rEsp
+	sub ebx, sizeof dword
+	mov dword ptr [esi].rEsp, ebx
+	
+	; get function	
+	mov eax, [esi].rEip	
+	inc eax	
+	movzx eax, byte ptr [eax]
+	lea eax, dword ptr [@function_table + eax * sizeof dword]
+	mov edx, dword ptr [eax]
+
+	; set return address
+	mov eax, [esi].rEip	
+	add eax, 2
+	mov dword ptr [ebx], eax
+
+	; set new EIP
+	mov [esi].rEip, edx
+
+	xor eax, eax
+	mov esp, ebp
+	pop ebp
+	ret
+call_nano_handler endp
+
 ;
 ; generate a random number used to deobfuscate
 ; Parameters: address of the instruction to deobfuscate

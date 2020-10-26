@@ -201,7 +201,7 @@ check_input proc
 
 	; compute initialization key
 	push dword ptr [ebp+arg0]
-	call compute_initialization_key
+	nano_call n_compute_initialization_key
 	add esp, 4
 
 	; generate random cube state
