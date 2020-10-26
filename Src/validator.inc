@@ -104,7 +104,7 @@ shuffle_cube proc
 	; generate the random move to execute
 	lea edi, [ebp+arg0]
 	push edi
-	call gen_cube_random
+	nano_call n_gen_cube_random
 
 	; execute the move
 	mov esi, dword ptr [ebp+arg1]	
@@ -207,7 +207,7 @@ check_input proc
 	; generate random cube state
 	push dword ptr [ebp+local0]
 	push eax
-	call shuffle_cube
+	nano_call n_shuffle_cube
 
 	; the cube is in its initial state. Execute the input moves
 	mov eax, dword ptr [ebp+arg1]
@@ -216,7 +216,7 @@ check_input proc
 
 	; check result and compute the decryption key
 	push dword ptr [ebp+local0]
-	call verify_cube_result
+	nano_call n_verify_cube_result
 
 	mov esp, ebp
 	pop ebp

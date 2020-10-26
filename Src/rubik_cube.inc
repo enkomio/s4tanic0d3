@@ -298,126 +298,126 @@ execute_move macro cube_state, cube_move
 	test cube_move, cube_move
 	jnz @f_prime_move
 @f_move:
-	call move_F
+	nano_call n_move_F
 	jmp @execute_move_exit
 
 @f_prime_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @u_move
-	call move_F_prime
+	nano_call n_move_F_prime
 	jmp @execute_move_exit
 
 @u_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @u_prime_move
-	call move_U
+	nano_call n_move_U
 	jmp @execute_move_exit
 
 @u_prime_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @l_move
-	call move_U_prime
+	nano_call n_move_U_prime
 	jmp @execute_move_exit
 
 @l_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @l_prime_move
-	call move_L
+	nano_call n_move_L
 	jmp @execute_move_exit
 	
 @l_prime_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @d_move
-	call move_L_prime
+	nano_call n_move_L_prime
 	jmp @execute_move_exit
 
 @d_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @d_prime_move
-	call move_D
+	nano_call n_move_D
 	jmp @execute_move_exit
 
 @d_prime_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @m_move
-	call move_D_prime
+	nano_call n_move_D_prime
 	jmp @execute_move_exit
 
 @m_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @m_prime_move
-	call move_M
+	nano_call n_move_M
 	jmp @execute_move_exit
 
 @m_prime_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @e_move
-	call move_M_prime
+	nano_call n_move_M_prime
 	jmp @execute_move_exit
 
 @e_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @e_prime_move
-	call move_E
+	nano_call n_move_E
 	jmp @execute_move_exit
 
 @e_prime_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @r_move
-	call move_E_prime
+	nano_call n_move_E_prime
 	jmp @execute_move_exit
 
 @r_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @r_prime_move
-	call move_R
+	nano_call n_move_R
 	jmp @execute_move_exit
 
 @r_prime_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @s_move
-	call move_R_prime
+	nano_call n_move_R_prime
 	jmp @execute_move_exit
 
 @s_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @s_prime_move
-	call move_S
+	nano_call n_move_S
 	jmp @execute_move_exit
 
 @s_prime_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @b_move
-	call move_S_prime
+	nano_call n_move_S_prime
 	jmp @execute_move_exit
 
 @b_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @b_prime_move
-	call move_B
+	nano_call n_move_B
 	jmp @execute_move_exit
 
 @b_prime_move:
 	dec cube_move
 	test cube_move, cube_move
 	jnz @execute_move_exit
-	call move_B_prime	
+	nano_call n_move_B_prime	
 
 @execute_move_exit: 
 	pop cube_state

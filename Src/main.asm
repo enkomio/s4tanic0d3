@@ -33,6 +33,7 @@ g_saved_end_protected_code dword 0h
 g_insert_license db "Please enter your license key: ", 0h
 g_insert_username db "Please enter your ID: ", 0h
 g_wrong_result db "The inserted license is not valid!", 0h
+g_checking db "Verifying license, please wait...", 0dh, 0ah, 0h
 g_license_separator db "-", 0h
 
 g_ascii_num word 030h
@@ -221,6 +222,10 @@ main proc
 	;pushfd
 	;or word ptr [esp], 100h
 	;popfd
+
+	; print please wair message
+	push offset [g_checking]
+	call print_line
 
 	; check the username/license values
 	push dword ptr [ebp+local1]
