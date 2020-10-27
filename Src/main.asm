@@ -127,7 +127,6 @@ trap_handler proc
 	mov ebx, [ebp+arg0]	
 	mov eax, [ebx].rEip	
 
-@@:
 	; verify that the faulty EIP is inside the protected range, if not does not decrypt	
 	cmp eax, dword ptr [g_saved_start_protected_code]
 	jb @exit
