@@ -98,7 +98,7 @@ shuffle_cube proc
 	sub esp, sizeof dword
 	
 	; initialize loop counter
-	mov dword ptr [ebp+local0], 1000h
+	mov dword ptr [ebp+local0], 100h
 
 @@:
 	; generate the random move to execute

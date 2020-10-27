@@ -92,9 +92,6 @@ end_protected_code_marker
 	dword offset move_E
 	dword offset move_E_prime
 
-@nop:
-	nop
-
 ;
 ; restore bytes previously overwritten by decrypted code
 ;
@@ -127,20 +124,7 @@ trap_handler proc
 	; obtains the instruction address causing the fault
 	assume  ebx: ptr CONTEXT
 	mov ebx, [ebp+arg0]	
-	mov eax, [ebx].rEip		
-
-	; The code below uses a global variable for a valid reason. When the privileged
-	; exception is raised, and the EIP modified accordingly, the trap flag, once  
-	; set, executes one instruction and then stop (this is an expected behaviour).
-	; Unfortunately, with this behaviour, we miss the just decrypted instruction.
-	; With this solution, we ensure that the executed instruction is just a dummy 
-	; one, and when the trap_handler is called again, the real instruction is set.
-	; If you know a more elegant solution to this, please let me know :)
-	mov ebx, dword ptr [g_restore_address]
-	test ebx, ebx
-	jz @f
-	mov dword ptr [g_restore_address], 0h
-	mov eax, ebx
+	mov eax, [ebx].rEip	
 
 @@:
 	; verify that the faulty EIP is inside the protected range, if not does not decrypt	
@@ -188,8 +172,6 @@ call_nano_handler proc
 	mov dword ptr [ebx], eax
 
 	; set new EIP
-	mov dword ptr [g_restore_address], edx
-	mov edx, offset [@nop]
 	mov [esi].rEip, edx
 
 	xor eax, eax
@@ -214,6 +196,11 @@ exception_handler proc
 
 	; replace previous instructions if necessary
 	call restore_bytes
+
+	; invoke trap handler
+	push [ebp+arg2]
+	call trap_handler
+	xor eax, eax
 	jmp @set_trap_flag
 	
 @@:
