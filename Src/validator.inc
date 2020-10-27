@@ -160,7 +160,7 @@ verify_cube_result proc
 	rol eax, 10h
 	neg bx
 	mov ax, bx
-	xor eax, 02d66483ah
+	xor eax, 7faa1aeeh
 	mov esp, ebp
 	pop ebp
 	ret
