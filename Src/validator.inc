@@ -160,7 +160,7 @@ verify_cube_result proc
 	rol eax, 10h
 	neg bx
 	mov ax, bx
-	xor eax, 7faa1aeeh
+	xor eax, dword ptr [g_verification_magic]
 	mov esp, ebp
 	pop ebp
 	ret

@@ -45,6 +45,7 @@ g_ascii_lower word 057h
 g_cube_color db "ywobrg"
 g_cube_moves dword 0h
 g_cube_moves_length dword 0h
+g_verification_magic dword 0b554a050h
 
 ; play wave vars
 g_element_name db 's4tanic0d3.S4T+',0h
@@ -238,6 +239,45 @@ exception_handler proc
 	ret
 exception_handler endp
 
+;
+; Verify is a debugger is attached and if so modify then number to
+; initialize the cube
+;
+check_debugger proc
+	push ebp
+	mov ebp, esp	
+
+	; load to ESI the value
+	mov esi, dword ptr [g_verification_magic]
+
+	; transit to 64-bit world
+	push 33h
+	call $+5
+	add dword ptr [esp], 5h
+	retf
+
+	; check debugger and return to 32-bit
+	db 065h, 048h, 08bh, 004h, 025h, 030h, 000h, 000h, 000h
+	db 048h, 08bh, 040h, 060h
+	db 048h, 00fh, 0b6h, 040h, 002h
+	db 048h, 085h, 0c0h
+	db 048h, 0bbh, 0deh, 0c0h, 0adh, 0bah, 000h, 000h, 000h, 000h
+	db 048h, 0b8h, 0beh, 0bah, 0feh, 0cah, 000h, 000h, 000h, 000h
+	db 048h, 00fh, 044h, 0d8h
+	db 048h, 033h, 0f3h
+	db 0e8h, 000h, 000h, 000h, 000h
+	db 0c7h, 044h, 024h, 004h, 023h, 000h, 000h, 000h
+	db 083h, 004h, 024h, 00dh
+	db 0cbh
+
+	; save back the result, the correct value should be 7faa1aeeh
+	mov dword ptr [g_verification_magic], esi
+
+	mov esp, ebp
+	pop ebp
+	ret
+check_debugger endp
+
 main proc
 	push ebp
 	mov ebp, esp
@@ -287,6 +327,9 @@ main proc
 	; print wait message
 	push offset [g_wait]
 	call print_line
+
+	; check debugger
+	call check_debugger
 
 	; set the exception handler
 	push offset exception_handler
