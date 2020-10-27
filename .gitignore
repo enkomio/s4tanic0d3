@@ -3,6 +3,7 @@ Debug
 Release
 bin
 packages/
+obj/
 
 # Prerequisites
 *.d
