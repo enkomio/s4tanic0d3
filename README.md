@@ -7,8 +7,12 @@ The program runs only on 64-bit systems
 ## Description
 Difficulty: Medium/High
 
-You can download the binary from: https://github.com/enkomio/s4tanic0d3/releases/tag/1.0 (SHA-1: D951605C41D2790DD6EE99F765DB4AA8D18B457B)
+You can download the binary from: https://github.com/enkomio/s4tanic0d3/releases/tag/1.0 (SHA-1: 3F73CF764F1E84DECCF85B902C71722D2230A0C5)
 
 ### Goals: 
 * Find a valid ID/License pair
 * Write a license generator
+
+
+#### Updates:
+2020/10/30 - Updated binary to fix an issue in case of invalid license
