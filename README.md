@@ -16,7 +16,7 @@ You can download the binary from: https://github.com/enkomio/s4tanic0d3/releases
 * Write a license generator
 
 ### Solutions
-* <a href=" https://www.youtube.com/watch?v=NJamb40GSYY">Blind solving a crackme by s4tan - Part 1</a>, by: <a href="https://twitter.com/ZetaTwo">ZetaTwo</a>
+* <a href="https://www.youtube.com/watch?v=NJamb40GSYY">Blind solving a crackme by s4tan - Part 1</a>, by: <a href="https://twitter.com/ZetaTwo">ZetaTwo</a>
 
 
 #### Updates:
