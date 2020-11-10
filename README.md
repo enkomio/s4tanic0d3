@@ -15,6 +15,9 @@ You can download the binary from: https://github.com/enkomio/s4tanic0d3/releases
 * Find a valid ID/License pair
 * Write a license generator
 
+### Solutions
+* <a href=" https://www.youtube.com/watch?v=NJamb40GSYY">Blind solving a crackme by s4tan - Part 1</a>, by: <a href="https://twitter.com/ZetaTwo">ZetaTwo</a>
+
 
 #### Updates:
 2020/10/30 - Updated binary to fix an issue in case of invalid license
