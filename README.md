@@ -7,7 +7,7 @@ If you think to have find a bug, please open an issue or send me a DM on twitter
 The program runs only on 64-bit systems
 
 ## Description
-Difficulty: Hard
+Difficulty: **Hard**
 
 You can download the binary from: https://github.com/enkomio/s4tanic0d3/releases/tag/1.0 (SHA-1: 3F73CF764F1E84DECCF85B902C71722D2230A0C5)
 
