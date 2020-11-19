@@ -7,7 +7,7 @@ If you think to have find a bug, please open an issue or send me a DM on twitter
 The program runs only on 64-bit systems
 
 ## Description
-Difficulty: Medium/High
+Difficulty: Hard
 
 You can download the binary from: https://github.com/enkomio/s4tanic0d3/releases/tag/1.0 (SHA-1: 3F73CF764F1E84DECCF85B902C71722D2230A0C5)
 
@@ -18,7 +18,7 @@ You can download the binary from: https://github.com/enkomio/s4tanic0d3/releases
 ### Solutions
 * <a href="https://www.youtube.com/watch?v=NJamb40GSYY">Blind solving a crackme by s4tan - Part 1</a>, by: <a href="https://twitter.com/ZetaTwo">ZetaTwo</a>
 * <a href="https://www.youtube.com/watch?v=6y4tfVWH-qM">Blind solving a crackme by s4tan - Part 2</a>, by: <a href="https://twitter.com/ZetaTwo">ZetaTwo</a>
-
+* <a href="https://www.youtube.com/watch?v=kuhu9VEASQI">Blind solving a crackme by s4tan - Part 2</a>, by: <a href="https://twitter.com/ZetaTwo">ZetaTwo</a>
 
 #### Updates:
 2020/10/30 - Updated binary to fix an issue in case of invalid license
