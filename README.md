@@ -11,6 +11,13 @@ Difficulty: **Hard**
 
 You can download the binary from: https://github.com/enkomio/s4tanic0d3/releases/tag/1.0 (SHA-1: 3F73CF764F1E84DECCF85B902C71722D2230A0C5)
 
+#### Valid ID/License:
+ID: s4tan
+License: cc144ggc057cc4402dgg44gg66cc22
+
+ID: antani
+License: 0c2h7h35g66gg4600446gg66003
+
 ### Goals: 
 * Find a valid ID/License pair
 * Write a license generator
