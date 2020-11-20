@@ -32,5 +32,5 @@ License: 0c2h7h35g66gg4600446gg66003
 * <a href="https://www.youtube.com/watch?v=kuhu9VEASQI">Blind solving a crackme by s4tan - Part 3</a>, by: <a href="https://twitter.com/ZetaTwo">ZetaTwo</a>
 
 #### Updates:
-2020/11/20 - Source doe released
-2020/10/30 - Updated binary to fix an issue in case of invalid license
+* 2020/11/20 - Source code released
+* 2020/10/30 - Updated binary to fix an issue in case of invalid license
