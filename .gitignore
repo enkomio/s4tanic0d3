@@ -1,3 +1,12 @@
+.vs
+Debug
+Release
+bin
+packages/
+obj/
+.fake/
+fake/
+
 # Prerequisites
 *.d
 
@@ -6,6 +15,7 @@
 *.ko
 *.obj
 *.elf
+*.cache
 
 # Linker output
 *.ilk
