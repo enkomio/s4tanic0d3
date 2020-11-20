@@ -39,7 +39,7 @@ let main argv =
     let key = [|0xdeuy; 0xc0uy; 0x7auy; 0x5auy|]
     let greeting = """License valid!
     
-            -=[ s4tanicod3 ]=-
+            -=[ s4tanic0d3 ]=-
     
         BEING THE WISE AND COURAGEOUR
     
