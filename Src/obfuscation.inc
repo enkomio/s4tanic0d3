@@ -3,7 +3,7 @@ g_random_adder dword 415927h
 
 ; The following code implements what described in:
 ;	- https://www.msreverseengineering.com/blog/2015/6/29/transparent-deobfuscation-with-ida-processor-module-extensions
-; This protection is very similar to nanomities protection. See http://deroko.phearless.org/nanomites.zip
+; This protection is very similar to nanomites protection. See http://deroko.phearless.org/nanomites.zip
 ; file nanomites.asm line 1741
 
 n_compute_initialization_key equ 0h

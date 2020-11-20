@@ -360,7 +360,7 @@ main proc
 	push eax
 	call rc4_decrypt
 	add esp, 0ch
-	
+		
 	; play the sound
 	call play_sound
 	test eax, eax
@@ -371,7 +371,7 @@ main proc
 	push dword ptr [g_success_size]
 	push offset [g_success]
 	push eax
-	call rc4_decrypt
+	call rc4_decrypt	
 
 	; print the congratz text
 	push 1fh
