@@ -53,7 +53,7 @@ let main argv =
     
         --
         (c) enkomio - 2020
-        https://github.com/enkomio/s4tanicod3
+        https://github.com/enkomio/s4tanic0d3
      """
 
     let musicFileContent = 
