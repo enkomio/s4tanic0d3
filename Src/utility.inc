@@ -248,10 +248,15 @@ IOProc proc
 	push edi
 
 	assume edx:ptr MMIOINFO
-	mov edx, dword ptr [ebp+arg0]
-	mov eax, dword ptr [ebp+arg1]	
+	mov edx, dword ptr [ebp+arg0]	
+
+	; validity check
+	mov eax, dword ptr [edx].lDiskOffset
+	cmp eax, dword ptr [g_sound_size]
+	jae @default
 
 	; MMIOM_OPEN
+	mov eax, dword ptr [ebp+arg1]	
 	cmp eax, 3h
 	jnz @mmiom_close
 	mov eax, dword ptr [g_already_opened]
